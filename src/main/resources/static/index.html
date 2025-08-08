@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alarm-X Smartwatch Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Jura:wght@400;600&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <!-- Bảng hiển thị trung tâm -->
+    <div class="main-display">
+        <div class="scanner"></div>
+        <div class="display-content">
+            <div id="time-display" class="main-time">12:00</div>
+            <div id="seconds-display" class="sub-time">:00</div>
+            <div id="date-display" class="main-date">---, --/--/----</div>
+        </div>
+    </div>
+
+    <!-- Các Widget Chức năng Xung quanh -->
+    <a href="#" class="widget alarm" id="alarm-btn">
+        <div class="widget-icon"><i class="fas fa-bell"></i></div>
+        <div class="widget-data">
+            <div class="data-label">ALARM</div>
+            <div class="data-value" id="alarm-status">OFF</div>
+        </div>
+    </a>
+    <a href="#" class="widget weather" id="weather-btn">
+        <div class="widget-icon"><i class="fas fa-cloud-sun"></i></div>
+        <div class="widget-data">
+            <div class="data-label">WEATHER</div>
+            <div class="data-value" id="weather-temp">28°C</div>
+        </div>
+    </a>
+    <a href="#" class="widget health" id="health-btn">
+        <div class="widget-icon"><i class="fas fa-heart-pulse"></i></div>
+        <div class="widget-data">
+            <div class="data-label">HEART RATE</div>
+            <div class="data-value" id="heart-rate">80</div>
+        </div>
+    </a>
+    <a href="#" class="widget stopwatch" id="stopwatch-btn">
+        <div class="widget-icon"><i class="fas fa-stopwatch"></i></div>
+        <div class="widget-data">
+            <div class="data-label">STOPWATCH</div>
+            <div class="data-value" id="stopwatch-display">00:00</div>
+        </div>
+    </a>
+</div>
+
+<!-- === CÁC CỬA SỔ POPUP CHO CHỨC NĂNG === -->
+
+<!-- Modal Báo thức (ĐÃ CẬP NHẬT HOÀN CHỈNH) -->
+<div id="alarm-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <button class="close-button">×</button>
+        <h2 class="modal-title">Đặt Báo Thức</h2>
+
+        <!-- Danh sách các báo thức đã lưu -->
+        <div class="alarm-list-container">
+            <ul id="alarm-list">
+                <!-- JavaScript sẽ tự động chèn các báo thức đã lưu vào đây -->
+            </ul>
+        </div>
+
+        <!-- Khu vực nhập liệu -->
+        <div class="alarm-form">
+            <input type="text" id="alarm-label" placeholder="Thêm tên báo thức (ví dụ: Dậy đi làm)">
+            <div class="alarm-inputs">
+                <input type="number" id="alarm-hour" min="0" max="23" placeholder="HH">
+                <span class="time-separator">:</span>
+                <input type="number" id="alarm-minute" min="0" max="59" placeholder="MM">
+            </div>
+        </div>
+
+        <!-- Nút bấm -->
+        <div class="modal-buttons">
+            <button id="save-alarm-btn">Lưu Báo Thức</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thời tiết -->
+<div id="weather-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <button class="close-button">×</button>
+        <h2 class="modal-title">Thời tiết Hiện tại</h2>
+        <div class="weather-display">
+            <i id="weather-icon-large" class="fas fa-sun weather-icon-large"></i>
+            <p id="weather-desc" class="weather-description">Trời Nắng</p>
+            <p id="weather-temp-large" class="weather-temperature">28°C</p>
+            <div class="weather-extra-info">
+                <span>Cảm giác như: <strong id="weather-feels-like">30°C</strong></span>
+                <span>Độ ẩm: <strong id="weather-humidity">70%</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sức khỏe -->
+<div id="health-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <button class="close-button">×</button>
+        <h2 class="modal-title">Tổng quan Sức khỏe</h2>
+        <div class="health-grid">
+            <div class="health-stat"><div class="stat-icon"><i class="fas fa-heart-pulse"></i></div><div class="stat-value" id="health-hr-modal">80</div><div class="stat-label">Nhịp tim (bpm)</div></div>
+            <div class="health-stat"><div class="stat-icon"><i class="fas fa-shoe-prints"></i></div><div class="stat-value" id="health-steps-modal">0</div><div class="stat-label">Bước chân</div></div>
+            <div class="health-stat"><div class="stat-icon"><i class="fas fa-route"></i></div><div class="stat-value" id="health-distance-modal">0.0 km</div><div class="stat-label">Quãng đường</div></div>
+            <div class="health-stat"><div class="stat-icon"><i class="fas fa-fire-flame-curved"></i></div><div class="stat-value" id="health-calories-modal">0 kcal</div><div class="stat-label">Calories</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Bấm giờ -->
+<div id="stopwatch-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <button class="close-button">×</button>
+        <h2 class="modal-title">Đồng hồ Bấm giờ</h2>
+        <div class="stopwatch-face">
+            <span id="sw-minutes">00</span>:<span id="sw-seconds">00</span>:<span id="sw-milliseconds">00</span>
+        </div>
+        <div class="stopwatch-buttons">
+            <button id="sw-start-btn">Bắt đầu</button>
+            <button id="sw-stop-btn">Dừng</button>
+            <button id="sw-reset-btn">Reset</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cảnh báo Báo thức -->
+<div id="alarm-alert-modal" class="modal-overlay hidden">
+    <div class="modal-content alert">
+        <h2 class="modal-title">BÁO THỨC!</h2>
+        <p>Đã đến giờ báo thức bạn đặt lúc <span id="alert-time">00:00</span></p>
+        <button id="stop-alarm-btn">TẮT BÁO THỨC</button>
+    </div>
+</div>
+
+<audio id="alarm-sound" src="sounds/alarm.mp3" loop></audio>
+<script src="script.js"></script>
+</body>
+</html>
