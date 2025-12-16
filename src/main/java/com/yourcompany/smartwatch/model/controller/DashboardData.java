@@ -1,5 +1,13 @@
 package com.yourcompany.smartwatch.model.controller;
 
+
+
+
+
+
+
+
+
 public class DashboardData {
     // ... (Dán toàn bộ nội dung file DashboardData.java đã cung cấp ở câu trả lời trước) ...
     private int heartRate;
